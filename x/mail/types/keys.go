@@ -38,3 +38,8 @@ const (
 	SentMessageKey      = "SentMessage/value/"
 	SentMessageCountKey = "SentMessage/count/"
 )
+
+const (
+	TimedoutMessageKey      = "TimedoutMessage/value/"
+	TimedoutMessageCountKey = "TimedoutMessage/count/"
+)

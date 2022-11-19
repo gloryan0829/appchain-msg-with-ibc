@@ -5,6 +5,7 @@ import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagin
 import { Message } from "./message";
 import { Params } from "./params";
 import { SentMessage } from "./sent_message";
+import { TimedoutMessage } from "./timedout_message";
 
 export const protobufPackage = "planet.mail";
 
@@ -49,6 +50,23 @@ export interface QueryAllSentMessageRequest {
 
 export interface QueryAllSentMessageResponse {
   SentMessage: SentMessage[];
+  pagination: PageResponse | undefined;
+}
+
+export interface QueryGetTimedoutMessageRequest {
+  id: number;
+}
+
+export interface QueryGetTimedoutMessageResponse {
+  TimedoutMessage: TimedoutMessage | undefined;
+}
+
+export interface QueryAllTimedoutMessageRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllTimedoutMessageResponse {
+  TimedoutMessage: TimedoutMessage[];
   pagination: PageResponse | undefined;
 }
 
@@ -565,6 +583,230 @@ export const QueryAllSentMessageResponse = {
   },
 };
 
+function createBaseQueryGetTimedoutMessageRequest(): QueryGetTimedoutMessageRequest {
+  return { id: 0 };
+}
+
+export const QueryGetTimedoutMessageRequest = {
+  encode(message: QueryGetTimedoutMessageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetTimedoutMessageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetTimedoutMessageRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTimedoutMessageRequest {
+    return { id: isSet(object.id) ? Number(object.id) : 0 };
+  },
+
+  toJSON(message: QueryGetTimedoutMessageRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetTimedoutMessageRequest>, I>>(
+    object: I,
+  ): QueryGetTimedoutMessageRequest {
+    const message = createBaseQueryGetTimedoutMessageRequest();
+    message.id = object.id ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryGetTimedoutMessageResponse(): QueryGetTimedoutMessageResponse {
+  return { TimedoutMessage: undefined };
+}
+
+export const QueryGetTimedoutMessageResponse = {
+  encode(message: QueryGetTimedoutMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.TimedoutMessage !== undefined) {
+      TimedoutMessage.encode(message.TimedoutMessage, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetTimedoutMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetTimedoutMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.TimedoutMessage = TimedoutMessage.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTimedoutMessageResponse {
+    return {
+      TimedoutMessage: isSet(object.TimedoutMessage) ? TimedoutMessage.fromJSON(object.TimedoutMessage) : undefined,
+    };
+  },
+
+  toJSON(message: QueryGetTimedoutMessageResponse): unknown {
+    const obj: any = {};
+    message.TimedoutMessage !== undefined
+      && (obj.TimedoutMessage = message.TimedoutMessage ? TimedoutMessage.toJSON(message.TimedoutMessage) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetTimedoutMessageResponse>, I>>(
+    object: I,
+  ): QueryGetTimedoutMessageResponse {
+    const message = createBaseQueryGetTimedoutMessageResponse();
+    message.TimedoutMessage = (object.TimedoutMessage !== undefined && object.TimedoutMessage !== null)
+      ? TimedoutMessage.fromPartial(object.TimedoutMessage)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllTimedoutMessageRequest(): QueryAllTimedoutMessageRequest {
+  return { pagination: undefined };
+}
+
+export const QueryAllTimedoutMessageRequest = {
+  encode(message: QueryAllTimedoutMessageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllTimedoutMessageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllTimedoutMessageRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllTimedoutMessageRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+  },
+
+  toJSON(message: QueryAllTimedoutMessageRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllTimedoutMessageRequest>, I>>(
+    object: I,
+  ): QueryAllTimedoutMessageRequest {
+    const message = createBaseQueryAllTimedoutMessageRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllTimedoutMessageResponse(): QueryAllTimedoutMessageResponse {
+  return { TimedoutMessage: [], pagination: undefined };
+}
+
+export const QueryAllTimedoutMessageResponse = {
+  encode(message: QueryAllTimedoutMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.TimedoutMessage) {
+      TimedoutMessage.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllTimedoutMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllTimedoutMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.TimedoutMessage.push(TimedoutMessage.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllTimedoutMessageResponse {
+    return {
+      TimedoutMessage: Array.isArray(object?.TimedoutMessage)
+        ? object.TimedoutMessage.map((e: any) => TimedoutMessage.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryAllTimedoutMessageResponse): unknown {
+    const obj: any = {};
+    if (message.TimedoutMessage) {
+      obj.TimedoutMessage = message.TimedoutMessage.map((e) => e ? TimedoutMessage.toJSON(e) : undefined);
+    } else {
+      obj.TimedoutMessage = [];
+    }
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllTimedoutMessageResponse>, I>>(
+    object: I,
+  ): QueryAllTimedoutMessageResponse {
+    const message = createBaseQueryAllTimedoutMessageResponse();
+    message.TimedoutMessage = object.TimedoutMessage?.map((e) => TimedoutMessage.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -577,6 +819,10 @@ export interface Query {
   SentMessage(request: QueryGetSentMessageRequest): Promise<QueryGetSentMessageResponse>;
   /** Queries a list of SentMessage items. */
   SentMessageAll(request: QueryAllSentMessageRequest): Promise<QueryAllSentMessageResponse>;
+  /** Queries a TimedoutMessage by id. */
+  TimedoutMessage(request: QueryGetTimedoutMessageRequest): Promise<QueryGetTimedoutMessageResponse>;
+  /** Queries a list of TimedoutMessage items. */
+  TimedoutMessageAll(request: QueryAllTimedoutMessageRequest): Promise<QueryAllTimedoutMessageResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -588,6 +834,8 @@ export class QueryClientImpl implements Query {
     this.MessageAll = this.MessageAll.bind(this);
     this.SentMessage = this.SentMessage.bind(this);
     this.SentMessageAll = this.SentMessageAll.bind(this);
+    this.TimedoutMessage = this.TimedoutMessage.bind(this);
+    this.TimedoutMessageAll = this.TimedoutMessageAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -617,6 +865,18 @@ export class QueryClientImpl implements Query {
     const data = QueryAllSentMessageRequest.encode(request).finish();
     const promise = this.rpc.request("planet.mail.Query", "SentMessageAll", data);
     return promise.then((data) => QueryAllSentMessageResponse.decode(new _m0.Reader(data)));
+  }
+
+  TimedoutMessage(request: QueryGetTimedoutMessageRequest): Promise<QueryGetTimedoutMessageResponse> {
+    const data = QueryGetTimedoutMessageRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.mail.Query", "TimedoutMessage", data);
+    return promise.then((data) => QueryGetTimedoutMessageResponse.decode(new _m0.Reader(data)));
+  }
+
+  TimedoutMessageAll(request: QueryAllTimedoutMessageRequest): Promise<QueryAllTimedoutMessageResponse> {
+    const data = QueryAllTimedoutMessageRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.mail.Query", "TimedoutMessageAll", data);
+    return promise.then((data) => QueryAllTimedoutMessageResponse.decode(new _m0.Reader(data)));
   }
 }
 

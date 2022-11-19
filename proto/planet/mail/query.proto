@@ -7,6 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "planet/mail/params.proto";
 import "planet/mail/message.proto";
 import "planet/mail/sent_message.proto";
+import "planet/mail/timedout_message.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "planet/x/mail/types";
@@ -35,6 +36,16 @@ service Query {
 	// Queries a list of SentMessage items.
 	rpc SentMessageAll(QueryAllSentMessageRequest) returns (QueryAllSentMessageResponse) {
 		option (google.api.http).get = "/planet/mail/sent_message";
+	}
+
+// Queries a TimedoutMessage by id.
+	rpc TimedoutMessage(QueryGetTimedoutMessageRequest) returns (QueryGetTimedoutMessageResponse) {
+		option (google.api.http).get = "/planet/mail/timedout_message/{id}";
+	}
+
+	// Queries a list of TimedoutMessage items.
+	rpc TimedoutMessageAll(QueryAllTimedoutMessageRequest) returns (QueryAllTimedoutMessageResponse) {
+		option (google.api.http).get = "/planet/mail/timedout_message";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -80,6 +91,23 @@ message QueryAllSentMessageRequest {
 
 message QueryAllSentMessageResponse {
 	repeated SentMessage SentMessage = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetTimedoutMessageRequest {
+	uint64 id = 1;
+}
+
+message QueryGetTimedoutMessageResponse {
+	TimedoutMessage TimedoutMessage = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllTimedoutMessageRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllTimedoutMessageResponse {
+	repeated TimedoutMessage TimedoutMessage = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

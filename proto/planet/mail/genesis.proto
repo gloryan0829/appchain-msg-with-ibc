@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "planet/mail/params.proto";
 import "planet/mail/message.proto";
 import "planet/mail/sent_message.proto";
+import "planet/mail/timedout_message.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "planet/x/mail/types";
@@ -17,5 +18,7 @@ message GenesisState {
   uint64 messageCount = 4;
   repeated SentMessage sentMessageList = 5 [(gogoproto.nullable) = false];
   uint64 sentMessageCount = 6;
+  repeated TimedoutMessage timedoutMessageList = 7 [(gogoproto.nullable) = false];
+  uint64 timedoutMessageCount = 8;
   // this line is used by starport scaffolding # genesis/proto/state
 }

@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Message } from "./message";
 import { Params } from "./params";
 import { SentMessage } from "./sent_message";
+import { TimedoutMessage } from "./timedout_message";
 
 export const protobufPackage = "planet.mail";
 
@@ -14,12 +15,23 @@ export interface GenesisState {
   messageList: Message[];
   messageCount: number;
   sentMessageList: SentMessage[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   sentMessageCount: number;
+  timedoutMessageList: TimedoutMessage[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  timedoutMessageCount: number;
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { params: undefined, portId: "", messageList: [], messageCount: 0, sentMessageList: [], sentMessageCount: 0 };
+  return {
+    params: undefined,
+    portId: "",
+    messageList: [],
+    messageCount: 0,
+    sentMessageList: [],
+    sentMessageCount: 0,
+    timedoutMessageList: [],
+    timedoutMessageCount: 0,
+  };
 }
 
 export const GenesisState = {
@@ -41,6 +53,12 @@ export const GenesisState = {
     }
     if (message.sentMessageCount !== 0) {
       writer.uint32(48).uint64(message.sentMessageCount);
+    }
+    for (const v of message.timedoutMessageList) {
+      TimedoutMessage.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.timedoutMessageCount !== 0) {
+      writer.uint32(64).uint64(message.timedoutMessageCount);
     }
     return writer;
   },
@@ -70,6 +88,12 @@ export const GenesisState = {
         case 6:
           message.sentMessageCount = longToNumber(reader.uint64() as Long);
           break;
+        case 7:
+          message.timedoutMessageList.push(TimedoutMessage.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.timedoutMessageCount = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -88,6 +112,10 @@ export const GenesisState = {
         ? object.sentMessageList.map((e: any) => SentMessage.fromJSON(e))
         : [],
       sentMessageCount: isSet(object.sentMessageCount) ? Number(object.sentMessageCount) : 0,
+      timedoutMessageList: Array.isArray(object?.timedoutMessageList)
+        ? object.timedoutMessageList.map((e: any) => TimedoutMessage.fromJSON(e))
+        : [],
+      timedoutMessageCount: isSet(object.timedoutMessageCount) ? Number(object.timedoutMessageCount) : 0,
     };
   },
 
@@ -107,6 +135,12 @@ export const GenesisState = {
       obj.sentMessageList = [];
     }
     message.sentMessageCount !== undefined && (obj.sentMessageCount = Math.round(message.sentMessageCount));
+    if (message.timedoutMessageList) {
+      obj.timedoutMessageList = message.timedoutMessageList.map((e) => e ? TimedoutMessage.toJSON(e) : undefined);
+    } else {
+      obj.timedoutMessageList = [];
+    }
+    message.timedoutMessageCount !== undefined && (obj.timedoutMessageCount = Math.round(message.timedoutMessageCount));
     return obj;
   },
 
@@ -120,6 +154,8 @@ export const GenesisState = {
     message.messageCount = object.messageCount ?? 0;
     message.sentMessageList = object.sentMessageList?.map((e) => SentMessage.fromPartial(e)) || [];
     message.sentMessageCount = object.sentMessageCount ?? 0;
+    message.timedoutMessageList = object.timedoutMessageList?.map((e) => TimedoutMessage.fromPartial(e)) || [];
+    message.timedoutMessageCount = object.timedoutMessageCount ?? 0;
     return message;
   },
 };

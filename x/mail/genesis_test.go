@@ -32,6 +32,15 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		SentMessageCount: 2,
+		TimedoutMessageList: []types.TimedoutMessage{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		TimedoutMessageCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -49,5 +58,7 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, genesisState.MessageCount, got.MessageCount)
 	require.ElementsMatch(t, genesisState.SentMessageList, got.SentMessageList)
 	require.Equal(t, genesisState.SentMessageCount, got.SentMessageCount)
+	require.ElementsMatch(t, genesisState.TimedoutMessageList, got.TimedoutMessageList)
+	require.Equal(t, genesisState.TimedoutMessageCount, got.TimedoutMessageCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

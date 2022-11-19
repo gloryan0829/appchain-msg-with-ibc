@@ -5,9 +5,10 @@ import { MailPacketData } from "planet-client-ts/planet.mail/types"
 import { NoData } from "planet-client-ts/planet.mail/types"
 import { Params } from "planet-client-ts/planet.mail/types"
 import { SentMessage } from "planet-client-ts/planet.mail/types"
+import { TimedoutMessage } from "planet-client-ts/planet.mail/types"
 
 
-export { Message, MailPacketData, NoData, Params, SentMessage };
+export { Message, MailPacketData, NoData, Params, SentMessage, TimedoutMessage };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -43,6 +44,8 @@ const getDefaultState = () => {
 				MessageAll: {},
 				SentMessage: {},
 				SentMessageAll: {},
+				TimedoutMessage: {},
+				TimedoutMessageAll: {},
 				
 				_Structure: {
 						Message: getStructure(Message.fromPartial({})),
@@ -50,6 +53,7 @@ const getDefaultState = () => {
 						NoData: getStructure(NoData.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						SentMessage: getStructure(SentMessage.fromPartial({})),
+						TimedoutMessage: getStructure(TimedoutMessage.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -107,6 +111,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.SentMessageAll[JSON.stringify(params)] ?? {}
+		},
+				getTimedoutMessage: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.TimedoutMessage[JSON.stringify(params)] ?? {}
+		},
+				getTimedoutMessageAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.TimedoutMessageAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -255,6 +271,54 @@ export default {
 				return getters['getSentMessageAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QuerySentMessageAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryTimedoutMessage({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetMail.query.queryTimedoutMessage( key.id)).data
+				
+					
+				commit('QUERY', { query: 'TimedoutMessage', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryTimedoutMessage', payload: { options: { all }, params: {...key},query }})
+				return getters['getTimedoutMessage']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryTimedoutMessage API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryTimedoutMessageAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetMail.query.queryTimedoutMessageAll(query ?? undefined)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.PlanetMail.query.queryTimedoutMessageAll({...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'TimedoutMessageAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryTimedoutMessageAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getTimedoutMessageAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryTimedoutMessageAll API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

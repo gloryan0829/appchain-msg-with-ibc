@@ -52,12 +52,31 @@ export interface MailQueryAllSentMessageResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface MailQueryAllTimedoutMessageResponse {
+  TimedoutMessage?: MailTimedoutMessage[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface MailQueryGetMessageResponse {
   Message?: MailMessage;
 }
 
 export interface MailQueryGetSentMessageResponse {
   SentMessage?: MailSentMessage;
+}
+
+export interface MailQueryGetTimedoutMessageResponse {
+  TimedoutMessage?: MailTimedoutMessage;
 }
 
 /**
@@ -72,6 +91,14 @@ export interface MailSentMessage {
   /** @format uint64 */
   id?: string;
   msgID?: string;
+  title?: string;
+  chain?: string;
+  creator?: string;
+}
+
+export interface MailTimedoutMessage {
+  /** @format uint64 */
+  id?: string;
   title?: string;
   chain?: string;
   creator?: string;
@@ -380,6 +407,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   querySentMessage = (id: string, params: RequestParams = {}) =>
     this.request<MailQueryGetSentMessageResponse, RpcStatus>({
       path: `/planet/mail/sent_message/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTimedoutMessageAll
+   * @summary Queries a list of TimedoutMessage items.
+   * @request GET:/planet/mail/timedout_message
+   */
+  queryTimedoutMessageAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<MailQueryAllTimedoutMessageResponse, RpcStatus>({
+      path: `/planet/mail/timedout_message`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTimedoutMessage
+   * @summary Queries a TimedoutMessage by id.
+   * @request GET:/planet/mail/timedout_message/{id}
+   */
+  queryTimedoutMessage = (id: string, params: RequestParams = {}) =>
+    this.request<MailQueryGetTimedoutMessageResponse, RpcStatus>({
+      path: `/planet/mail/timedout_message/${id}`,
       method: "GET",
       format: "json",
       ...params,
