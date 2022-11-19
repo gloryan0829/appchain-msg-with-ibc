@@ -37,8 +37,27 @@ export interface MailQueryAllMessageResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface MailQueryAllSentMessageResponse {
+  SentMessage?: MailSentMessage[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface MailQueryGetMessageResponse {
   Message?: MailMessage;
+}
+
+export interface MailQueryGetSentMessageResponse {
+  SentMessage?: MailSentMessage;
 }
 
 /**
@@ -47,6 +66,15 @@ export interface MailQueryGetMessageResponse {
 export interface MailQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: MailParams;
+}
+
+export interface MailSentMessage {
+  /** @format uint64 */
+  id?: string;
+  msgID?: string;
+  title?: string;
+  chain?: string;
+  creator?: string;
 }
 
 export interface ProtobufAny {
@@ -310,6 +338,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<MailQueryParamsResponse, RpcStatus>({
       path: `/planet/mail/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentMessageAll
+   * @summary Queries a list of SentMessage items.
+   * @request GET:/planet/mail/sent_message
+   */
+  querySentMessageAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<MailQueryAllSentMessageResponse, RpcStatus>({
+      path: `/planet/mail/sent_message`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySentMessage
+   * @summary Queries a SentMessage by id.
+   * @request GET:/planet/mail/sent_message/{id}
+   */
+  querySentMessage = (id: string, params: RequestParams = {}) =>
+    this.request<MailQueryGetSentMessageResponse, RpcStatus>({
+      path: `/planet/mail/sent_message/${id}`,
       method: "GET",
       format: "json",
       ...params,

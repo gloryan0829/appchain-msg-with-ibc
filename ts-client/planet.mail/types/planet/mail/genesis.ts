@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Message } from "./message";
 import { Params } from "./params";
+import { SentMessage } from "./sent_message";
 
 export const protobufPackage = "planet.mail";
 
@@ -11,12 +12,14 @@ export interface GenesisState {
   params: Params | undefined;
   portId: string;
   messageList: Message[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   messageCount: number;
+  sentMessageList: SentMessage[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  sentMessageCount: number;
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { params: undefined, portId: "", messageList: [], messageCount: 0 };
+  return { params: undefined, portId: "", messageList: [], messageCount: 0, sentMessageList: [], sentMessageCount: 0 };
 }
 
 export const GenesisState = {
@@ -32,6 +35,12 @@ export const GenesisState = {
     }
     if (message.messageCount !== 0) {
       writer.uint32(32).uint64(message.messageCount);
+    }
+    for (const v of message.sentMessageList) {
+      SentMessage.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.sentMessageCount !== 0) {
+      writer.uint32(48).uint64(message.sentMessageCount);
     }
     return writer;
   },
@@ -55,6 +64,12 @@ export const GenesisState = {
         case 4:
           message.messageCount = longToNumber(reader.uint64() as Long);
           break;
+        case 5:
+          message.sentMessageList.push(SentMessage.decode(reader, reader.uint32()));
+          break;
+        case 6:
+          message.sentMessageCount = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -69,6 +84,10 @@ export const GenesisState = {
       portId: isSet(object.portId) ? String(object.portId) : "",
       messageList: Array.isArray(object?.messageList) ? object.messageList.map((e: any) => Message.fromJSON(e)) : [],
       messageCount: isSet(object.messageCount) ? Number(object.messageCount) : 0,
+      sentMessageList: Array.isArray(object?.sentMessageList)
+        ? object.sentMessageList.map((e: any) => SentMessage.fromJSON(e))
+        : [],
+      sentMessageCount: isSet(object.sentMessageCount) ? Number(object.sentMessageCount) : 0,
     };
   },
 
@@ -82,6 +101,12 @@ export const GenesisState = {
       obj.messageList = [];
     }
     message.messageCount !== undefined && (obj.messageCount = Math.round(message.messageCount));
+    if (message.sentMessageList) {
+      obj.sentMessageList = message.sentMessageList.map((e) => e ? SentMessage.toJSON(e) : undefined);
+    } else {
+      obj.sentMessageList = [];
+    }
+    message.sentMessageCount !== undefined && (obj.sentMessageCount = Math.round(message.sentMessageCount));
     return obj;
   },
 
@@ -93,6 +118,8 @@ export const GenesisState = {
     message.portId = object.portId ?? "";
     message.messageList = object.messageList?.map((e) => Message.fromPartial(e)) || [];
     message.messageCount = object.messageCount ?? 0;
+    message.sentMessageList = object.sentMessageList?.map((e) => SentMessage.fromPartial(e)) || [];
+    message.sentMessageCount = object.sentMessageCount ?? 0;
     return message;
   },
 };

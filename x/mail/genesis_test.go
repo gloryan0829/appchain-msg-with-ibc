@@ -23,6 +23,15 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		MessageCount: 2,
+		SentMessageList: []types.SentMessage{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		SentMessageCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -38,5 +47,7 @@ func TestGenesis(t *testing.T) {
 
 	require.ElementsMatch(t, genesisState.MessageList, got.MessageList)
 	require.Equal(t, genesisState.MessageCount, got.MessageCount)
+	require.ElementsMatch(t, genesisState.SentMessageList, got.SentMessageList)
+	require.Equal(t, genesisState.SentMessageCount, got.SentMessageCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "planet/mail/params.proto";
 import "planet/mail/message.proto";
+import "planet/mail/sent_message.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "planet/x/mail/types";
@@ -24,6 +25,16 @@ service Query {
 	// Queries a list of Message items.
 	rpc MessageAll(QueryAllMessageRequest) returns (QueryAllMessageResponse) {
 		option (google.api.http).get = "/planet/mail/message";
+	}
+
+// Queries a SentMessage by id.
+	rpc SentMessage(QueryGetSentMessageRequest) returns (QueryGetSentMessageResponse) {
+		option (google.api.http).get = "/planet/mail/sent_message/{id}";
+	}
+
+	// Queries a list of SentMessage items.
+	rpc SentMessageAll(QueryAllSentMessageRequest) returns (QueryAllSentMessageResponse) {
+		option (google.api.http).get = "/planet/mail/sent_message";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -52,6 +63,23 @@ message QueryAllMessageRequest {
 
 message QueryAllMessageResponse {
 	repeated Message Message = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetSentMessageRequest {
+	uint64 id = 1;
+}
+
+message QueryGetSentMessageResponse {
+	SentMessage SentMessage = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllSentMessageRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllSentMessageResponse {
+	repeated SentMessage SentMessage = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

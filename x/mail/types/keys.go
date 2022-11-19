@@ -33,3 +33,8 @@ const (
 	MessageKey      = "Message/value/"
 	MessageCountKey = "Message/count/"
 )
+
+const (
+	SentMessageKey      = "SentMessage/value/"
+	SentMessageCountKey = "SentMessage/count/"
+)

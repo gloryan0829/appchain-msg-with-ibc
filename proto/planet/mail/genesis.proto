@@ -4,6 +4,7 @@ package planet.mail;
 import "gogoproto/gogo.proto";
 import "planet/mail/params.proto";
 import "planet/mail/message.proto";
+import "planet/mail/sent_message.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "planet/x/mail/types";
@@ -14,5 +15,7 @@ message GenesisState {
   string port_id = 2;
   repeated Message messageList = 3 [(gogoproto.nullable) = false];
   uint64 messageCount = 4;
+  repeated SentMessage sentMessageList = 5 [(gogoproto.nullable) = false];
+  uint64 sentMessageCount = 6;
   // this line is used by starport scaffolding # genesis/proto/state
 }

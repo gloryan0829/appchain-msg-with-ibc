@@ -1,0 +1,13 @@
+syntax = "proto3";
+package planet.mail;
+
+option go_package = "planet/x/mail/types";
+
+message SentMessage {
+  uint64 id = 1;
+  string msgID = 2; 
+  string title = 3; 
+  string chain = 4; 
+  string creator = 5; 
+  
+}

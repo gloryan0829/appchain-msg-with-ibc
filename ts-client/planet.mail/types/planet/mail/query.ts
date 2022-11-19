@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagination";
 import { Message } from "./message";
 import { Params } from "./params";
+import { SentMessage } from "./sent_message";
 
 export const protobufPackage = "planet.mail";
 
@@ -31,6 +32,23 @@ export interface QueryAllMessageRequest {
 
 export interface QueryAllMessageResponse {
   Message: Message[];
+  pagination: PageResponse | undefined;
+}
+
+export interface QueryGetSentMessageRequest {
+  id: number;
+}
+
+export interface QueryGetSentMessageResponse {
+  SentMessage: SentMessage | undefined;
+}
+
+export interface QueryAllSentMessageRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllSentMessageResponse {
+  SentMessage: SentMessage[];
   pagination: PageResponse | undefined;
 }
 
@@ -333,6 +351,220 @@ export const QueryAllMessageResponse = {
   },
 };
 
+function createBaseQueryGetSentMessageRequest(): QueryGetSentMessageRequest {
+  return { id: 0 };
+}
+
+export const QueryGetSentMessageRequest = {
+  encode(message: QueryGetSentMessageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSentMessageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetSentMessageRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetSentMessageRequest {
+    return { id: isSet(object.id) ? Number(object.id) : 0 };
+  },
+
+  toJSON(message: QueryGetSentMessageRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetSentMessageRequest>, I>>(object: I): QueryGetSentMessageRequest {
+    const message = createBaseQueryGetSentMessageRequest();
+    message.id = object.id ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryGetSentMessageResponse(): QueryGetSentMessageResponse {
+  return { SentMessage: undefined };
+}
+
+export const QueryGetSentMessageResponse = {
+  encode(message: QueryGetSentMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.SentMessage !== undefined) {
+      SentMessage.encode(message.SentMessage, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSentMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetSentMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.SentMessage = SentMessage.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetSentMessageResponse {
+    return { SentMessage: isSet(object.SentMessage) ? SentMessage.fromJSON(object.SentMessage) : undefined };
+  },
+
+  toJSON(message: QueryGetSentMessageResponse): unknown {
+    const obj: any = {};
+    message.SentMessage !== undefined
+      && (obj.SentMessage = message.SentMessage ? SentMessage.toJSON(message.SentMessage) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetSentMessageResponse>, I>>(object: I): QueryGetSentMessageResponse {
+    const message = createBaseQueryGetSentMessageResponse();
+    message.SentMessage = (object.SentMessage !== undefined && object.SentMessage !== null)
+      ? SentMessage.fromPartial(object.SentMessage)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllSentMessageRequest(): QueryAllSentMessageRequest {
+  return { pagination: undefined };
+}
+
+export const QueryAllSentMessageRequest = {
+  encode(message: QueryAllSentMessageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSentMessageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllSentMessageRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSentMessageRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+  },
+
+  toJSON(message: QueryAllSentMessageRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllSentMessageRequest>, I>>(object: I): QueryAllSentMessageRequest {
+    const message = createBaseQueryAllSentMessageRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAllSentMessageResponse(): QueryAllSentMessageResponse {
+  return { SentMessage: [], pagination: undefined };
+}
+
+export const QueryAllSentMessageResponse = {
+  encode(message: QueryAllSentMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.SentMessage) {
+      SentMessage.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSentMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAllSentMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.SentMessage.push(SentMessage.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSentMessageResponse {
+    return {
+      SentMessage: Array.isArray(object?.SentMessage)
+        ? object.SentMessage.map((e: any) => SentMessage.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryAllSentMessageResponse): unknown {
+    const obj: any = {};
+    if (message.SentMessage) {
+      obj.SentMessage = message.SentMessage.map((e) => e ? SentMessage.toJSON(e) : undefined);
+    } else {
+      obj.SentMessage = [];
+    }
+    message.pagination !== undefined
+      && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryAllSentMessageResponse>, I>>(object: I): QueryAllSentMessageResponse {
+    const message = createBaseQueryAllSentMessageResponse();
+    message.SentMessage = object.SentMessage?.map((e) => SentMessage.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -341,6 +573,10 @@ export interface Query {
   Message(request: QueryGetMessageRequest): Promise<QueryGetMessageResponse>;
   /** Queries a list of Message items. */
   MessageAll(request: QueryAllMessageRequest): Promise<QueryAllMessageResponse>;
+  /** Queries a SentMessage by id. */
+  SentMessage(request: QueryGetSentMessageRequest): Promise<QueryGetSentMessageResponse>;
+  /** Queries a list of SentMessage items. */
+  SentMessageAll(request: QueryAllSentMessageRequest): Promise<QueryAllSentMessageResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -350,6 +586,8 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.Message = this.Message.bind(this);
     this.MessageAll = this.MessageAll.bind(this);
+    this.SentMessage = this.SentMessage.bind(this);
+    this.SentMessageAll = this.SentMessageAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -367,6 +605,18 @@ export class QueryClientImpl implements Query {
     const data = QueryAllMessageRequest.encode(request).finish();
     const promise = this.rpc.request("planet.mail.Query", "MessageAll", data);
     return promise.then((data) => QueryAllMessageResponse.decode(new _m0.Reader(data)));
+  }
+
+  SentMessage(request: QueryGetSentMessageRequest): Promise<QueryGetSentMessageResponse> {
+    const data = QueryGetSentMessageRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.mail.Query", "SentMessage", data);
+    return promise.then((data) => QueryGetSentMessageResponse.decode(new _m0.Reader(data)));
+  }
+
+  SentMessageAll(request: QueryAllSentMessageRequest): Promise<QueryAllSentMessageResponse> {
+    const data = QueryAllSentMessageRequest.encode(request).finish();
+    const promise = this.rpc.request("planet.mail.Query", "SentMessageAll", data);
+    return promise.then((data) => QueryAllSentMessageResponse.decode(new _m0.Reader(data)));
   }
 }
 

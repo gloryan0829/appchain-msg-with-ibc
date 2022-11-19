@@ -4,9 +4,10 @@ import { Message } from "planet-client-ts/planet.mail/types"
 import { MailPacketData } from "planet-client-ts/planet.mail/types"
 import { NoData } from "planet-client-ts/planet.mail/types"
 import { Params } from "planet-client-ts/planet.mail/types"
+import { SentMessage } from "planet-client-ts/planet.mail/types"
 
 
-export { Message, MailPacketData, NoData, Params };
+export { Message, MailPacketData, NoData, Params, SentMessage };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -40,12 +41,15 @@ const getDefaultState = () => {
 				Params: {},
 				Message: {},
 				MessageAll: {},
+				SentMessage: {},
+				SentMessageAll: {},
 				
 				_Structure: {
 						Message: getStructure(Message.fromPartial({})),
 						MailPacketData: getStructure(MailPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
+						SentMessage: getStructure(SentMessage.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -91,6 +95,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.MessageAll[JSON.stringify(params)] ?? {}
+		},
+				getSentMessage: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.SentMessage[JSON.stringify(params)] ?? {}
+		},
+				getSentMessageAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.SentMessageAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -191,6 +207,54 @@ export default {
 				return getters['getMessageAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryMessageAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QuerySentMessage({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetMail.query.querySentMessage( key.id)).data
+				
+					
+				commit('QUERY', { query: 'SentMessage', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QuerySentMessage', payload: { options: { all }, params: {...key},query }})
+				return getters['getSentMessage']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QuerySentMessage API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QuerySentMessageAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.PlanetMail.query.querySentMessageAll(query ?? undefined)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.PlanetMail.query.querySentMessageAll({...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'SentMessageAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QuerySentMessageAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getSentMessageAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QuerySentMessageAll API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},
