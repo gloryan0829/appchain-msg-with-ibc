@@ -1,8 +1,10 @@
 // THIS FILE IS GENERATED AUTOMATICALLY. DO NOT MODIFY.
 
+import PlanetMail from './planet.mail'
 
 
 export default { 
+  PlanetMail: load(PlanetMail, 'planet.mail'),
   
 }
 

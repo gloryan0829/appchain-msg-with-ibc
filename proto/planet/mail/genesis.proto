@@ -1,0 +1,18 @@
+syntax = "proto3";
+package planet.mail;
+
+import "gogoproto/gogo.proto";
+import "planet/mail/params.proto";
+import "planet/mail/message.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "planet/x/mail/types";
+
+// GenesisState defines the mail module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  string port_id = 2;
+  repeated Message messageList = 3 [(gogoproto.nullable) = false];
+  uint64 messageCount = 4;
+  // this line is used by starport scaffolding # genesis/proto/state
+}
